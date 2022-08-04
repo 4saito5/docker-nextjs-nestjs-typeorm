@@ -1,2 +1,5 @@
-# nextjs-nestjs-typeorm-example
+# docker-nextjs-nestjs-typeorm
+## Introduction
 Next.js + NextJS + TypeORM Example
+
+## Usage

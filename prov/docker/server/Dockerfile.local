@@ -1,0 +1,18 @@
+FROM node:lts-alpine
+
+RUN apk add --update-cache \
+    curl \
+    git \
+    # node-gyp ビルド用のインストール for M1 Mac
+    python3 \
+    make \
+    g++ \
+    # # Change Timezone
+    tzdata \
+  && cp /usr/share/zoneinfo/Asia/Tokyo /etc/localtime \
+  # clean up
+  && apk del tzdata \
+  && yarn global add @nestjs/cli
+
+ENV project_dir=/opt/app
+WORKDIR ${project_dir}

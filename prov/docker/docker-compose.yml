@@ -1,0 +1,60 @@
+# Docker環境 for ローカルPC
+version: '3'
+
+services:
+  client:
+    container_name: client
+    image: client
+    build:
+      # コンテキストをリポジトリのルートディレクトリに指定
+      context: ../../
+      dockerfile: ./prov/docker/client/Dockerfile.local
+    # command: ash -c 'yarn dev -H 0.0.0.0'
+    # env_file:
+    #   - '../env/node-local.env'
+    volumes:
+      - ../../src/client:/opt/app
+    ports:
+      - 3000:3000
+    tty: true
+
+  server:
+    container_name: server
+    image: server
+    build:
+      # コンテキストをリポジトリのルートディレクトリに指定
+      context: ../../
+      dockerfile: ./prov/docker/server/Dockerfile.local
+    # command: ash -c 'yarn start:dev'
+    env_file:
+      - '../env/node-local.env'
+    volumes:
+      - ../../src/server:/opt/app
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+    tty: true
+
+  # ローカルDB
+  db:
+    container_name: db
+    image: mysql:8
+    platform: linux/amd64
+    env_file:
+      - ../env/db-local.env
+    volumes:
+      # Data out of Docker
+      - ../../.tmp/mysql_data:/var/lib/postgresql/data
+    ports:
+      - 13306:3306
+
+  # # Unitテスト用DB
+  # db-testing:
+  #   container_name: db-testing
+  #   image: mysql:8
+  #   platform: linux/amd64
+  #   env_file:
+  #     - ../env/db-local.env
+  #   ports:
+  #     - 23306:3306
